@@ -325,28 +325,28 @@ Let:
 
 - **Ball Pass Frequency Outer Race (BPFO):**
 \[
-BPFO = \frac{n}{2} f_r \left(1 - \frac{d}{D} \cos \theta \right)
+$BPFO = \frac{n}{2} f_r \left(1 - \frac{d}{D} \cos \theta \right)$
 \]
 
 - **Ball Pass Frequency Inner Race (BPFI):**
 \[
-BPFI = \frac{n}{2} f_r \left(1 + \frac{d}{D} \cos \theta \right)
+$BPFI =\frac{n}{2} f_r \left(1 + \frac{d}{D} \cos \theta \right)$
 \]
 
 - **Ball Spin Frequency (BSF):**
 \[
-BSF = \frac{D}{2d} f_r \left(1 - \left(\frac{d}{D} \cos \theta \right)^2\right)
+$BSF = \frac{D}{2d} f_r \left(1 - \left(\frac{d}{D} \cos \theta \right)^2\right)$
 \]
 
 - **Fundamental Train Frequency (FTF, cage frequency):**
 \[
-FTF = \frac{1}{2} f_r \left(1 - \frac{d}{D} \cos \theta \right)
+  $FTF =\frac{1}{2} f_r \left(1 - \frac{d}{D} \cos \theta \right)$
 \]
 
 ---
 
 ## ⚙️ 3) IMS Operating Parameters
-- **Shaft Speed**: 2000 RPM → \( f_r = 2000/60 = 33.33\ \text{Hz} \)  
+- **Shaft Speed**: 2000 RPM → \($ f_r = 2000/60 = 33.33\ \text{Hz} $\)  
 - **Bearing**: Rexnord ZA-2115 / 2115U  
 - **Geometry Needed**: roller count (\(n\)), roller diameter (\(d\)), pitch diameter (\(D\))  
 
