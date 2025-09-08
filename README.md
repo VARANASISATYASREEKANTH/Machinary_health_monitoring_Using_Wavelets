@@ -296,6 +296,108 @@ Common extracted features include:
 | **Use**             | Diagnostics & Prognostics |
 
 ---
+# ⚙️ Bearing Characteristic Frequencies for NASA IMS Dataset
+
+This document explains how to compute and interpret **bearing defect characteristic frequencies** for the **NASA IMS Bearing Dataset** (Rexnord ZA-2115 / 2115U insert bearings).  
+It includes formulas, example calculations using IMS operating conditions, and a Python script for direct computation.
+
+---
+
+## 📂 1) Dataset & Bearings
+- **Dataset**: NASA IMS (University of Cincinnati IMS Center in collaboration with NASA Ames).  
+- **Bearing Type**: Rexnord ZA-2115 / 2115U spherical/roller insert bearings.  
+- **Operating Speed**: ~2000 RPM (≈33.33 Hz).  
+- **Load**: Constant radial load (6000 lbs).  
+- **Data Files**: Vibration recordings (`.mat`) every 10 minutes until failure.  
+
+---
+
+## 🔢 2) Characteristic Frequency Formulas
+
+Let:
+- \( f_r \) = shaft rotational frequency (Hz)  
+- \( n \) = number of rolling elements (balls/rollers)  
+- \( d \) = rolling element diameter (mm)  
+- \( D \) = pitch diameter (mm)  
+- \( \theta \) = contact angle (rad)  
+
+**Formulas:**
+
+- **Ball Pass Frequency Outer Race (BPFO):**
+\[
+BPFO = \frac{n}{2} f_r \left(1 - \frac{d}{D} \cos \theta \right)
+\]
+
+- **Ball Pass Frequency Inner Race (BPFI):**
+\[
+BPFI = \frac{n}{2} f_r \left(1 + \frac{d}{D} \cos \theta \right)
+\]
+
+- **Ball Spin Frequency (BSF):**
+\[
+BSF = \frac{D}{2d} f_r \left(1 - \left(\frac{d}{D} \cos \theta \right)^2\right)
+\]
+
+- **Fundamental Train Frequency (FTF, cage frequency):**
+\[
+FTF = \frac{1}{2} f_r \left(1 - \frac{d}{D} \cos \theta \right)
+\]
+
+---
+
+## ⚙️ 3) IMS Operating Parameters
+- **Shaft Speed**: 2000 RPM → \( f_r = 2000/60 = 33.33\ \text{Hz} \)  
+- **Bearing**: Rexnord ZA-2115 / 2115U  
+- **Geometry Needed**: roller count (\(n\)), roller diameter (\(d\)), pitch diameter (\(D\))  
+
+👉 The public product pages provide bore & OD, but **internal geometry (n, d, D)** must come from a datasheet or measurement.
+
+---
+
+## 🧮 4) Example Calculation (Assumptions)
+*(illustrative values — replace with true dimensions when available)*
+
+- \( f_r = 33.33\ \text{Hz} \)  
+- \( n = 18 \) rollers  
+- \( d = 10.0\ \text{mm} \)  
+- \( D = 69.6\ \text{mm} \)  
+- \( \theta = 0^\circ \)  
+
+**Results:**
+- BPFO ≈ **257 Hz**  
+- BPFI ≈ **343 Hz**  
+- BSF ≈ **114 Hz**  
+- FTF ≈ **14 Hz**
+
+---
+
+## 🐍 5) Python Script
+
+```python
+import math
+
+def bearing_characteristic_freqs(rpm, n, d_mm, D_mm, theta_deg=0.0):
+    fr = rpm / 60.0  # shaft freq in Hz
+    theta = math.radians(theta_deg)
+    d = d_mm
+    D = D_mm
+
+    BPFO = (n/2.0) * fr * (1.0 - (d/D) * math.cos(theta))
+    BPFI = (n/2.0) * fr * (1.0 + (d/D) * math.cos(theta))
+    BSF = (D/(2.0*d)) * fr * (1.0 - ((d/D) * math.cos(theta))**2)
+    FTF = 0.5 * fr * (1.0 - (d/D) * math.cos(theta))
+    return {"fr_Hz": fr, "BPFO_Hz": BPFO, "BPFI_Hz": BPFI, "BSF_Hz": BSF, "FTF_Hz": FTF}
+
+# Example (replace with real geometry values):
+rpm = 2000
+n = 18           # number of rollers (replace with actual)
+d_mm = 10.0      # roller diameter in mm
+D_mm = 69.6      # pitch diameter in mm
+theta_deg = 0.0
+
+freqs = bearing_characteristic_freqs(rpm, n, d_mm, D_mm, theta_deg)
+for k,v in freqs.items():
+    print(f"{k}: {v:.2f} Hz")
 
 ## 📌 Notes
 - Outer race faults → **fixed-frequency patterns** (stationary component).  
