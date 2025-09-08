@@ -93,3 +93,108 @@ You can simulate and visualize spectrograms in Python using vibration signals (h
 If needed, I can provide **sample code to generate synthetic spectrograms** with annotated fault signatures.
 
 ---
+
+
+# 🔧 Bearing Fault Interpretation from NASA Datasets (Spectrogram-Based)
+
+This document provides guidance on interpreting bearing faults from **NASA Bearing Data Center** (e.g., CWRU or IMS datasets) using **spectrograms**.  
+It also describes the **physical damage mechanisms** and their **operational impacts**.
+
+---
+
+## 📊 Fault Types & Spectrogram Interpretation
+
+### 1. Inner Race Fault
+- **Spectrogram Features**
+  - Harmonics of **Ball Pass Frequency Inner Race (BPFI)**.
+  - Vertical streaks aligned with shaft rotation.
+  - Energy concentrated at higher frequencies.
+- **Physical Damage**
+  - Pitting or spalling on the **inner raceway**.
+- **Impact**
+  - Increased vibration, heating, and shaft imbalance.
+  - Accelerated wear → shaft misalignment → possible seizure.
+
+---
+
+### 2. Outer Race Fault
+- **Spectrogram Features**
+  - Harmonics of **Ball Pass Frequency Outer Race (BPFO)**.
+  - Fault frequencies appear **stable** since the outer race is stationary.
+  - Energy bursts at fixed frequencies.
+- **Physical Damage**
+  - Localized spalling/pitting on the **outer ring**.
+- **Impact**
+  - High vibration and noise.
+  - Stress on rolling elements → secondary ball wear.
+  - Shortened bearing life, risk of catastrophic failure.
+
+---
+
+### 3. Ball Fault
+- **Spectrogram Features**
+  - Harmonics of **Ball Spin Frequency (BSF)** with **modulated sidebands**.
+  - Scattered energy patterns due to ball–race impacts.
+- **Physical Damage**
+  - Flaking or cracks on **rolling elements** (balls).
+- **Impact**
+  - Uneven load distribution.
+  - Erratic vibrations and potential cage damage.
+  - Accelerated fatigue on both races.
+
+---
+
+### 4. Combined Faults (Inner + Outer, or Ball + Race)
+- **Spectrogram Features**
+  - Overlapping BPFI, BPFO, and BSF components.
+  - Broadband dense energy across wide frequency bands.
+- **Physical Damage**
+  - Spalling across multiple bearing components.
+- **Impact**
+  - Severe vibration and heat.
+  - Rapid progression to catastrophic failure.
+  - Usually detected in **late-stage degradation**.
+
+---
+
+### 5. Health Warning / Early Faults
+- **Spectrogram Features**
+  - Weak harmonics and sidebands.
+  - Low-energy impulses, sometimes intermittent.
+- **Physical Damage**
+  - Micropitting, lubrication breakdown, or micro-cracks.
+- **Impact**
+  - Early wear stage; if left undetected, fault growth accelerates.
+  - Early detection extends bearing life.
+
+---
+
+## 📑 Summary Table
+
+| Fault Type          | Spectrogram Signature                  | Physical Damage                | Impact                          |
+|---------------------|----------------------------------------|--------------------------------|---------------------------------|
+| **Inner Race**      | Harmonics of BPFI, vertical streaks    | Spalling/pits on inner race    | Heating, shaft imbalance        |
+| **Outer Race**      | Harmonics of BPFO, stable lines        | Spalling on outer race         | High vibration, noise           |
+| **Ball Fault**      | Sidebands around BSF, scattered energy | Flaking/cracks on balls        | Uneven load, cage damage        |
+| **Combined Faults** | Overlapping broadband signatures       | Multiple damaged parts         | Severe, rapid failure           |
+| **Early Faults**    | Weak sidebands, intermittent impulses  | Micropitting, lubrication loss | Early-stage wear, progressive   |
+
+---
+
+## 🚀 How to Use
+1. Load the NASA/CWRU bearing vibration datasets.
+2. Generate spectrograms from the vibration signals.
+3. Compare observed frequencies with theoretical bearing fault frequencies:
+   - **BPFI** = Ball Pass Frequency Inner Race  
+   - **BPFO** = Ball Pass Frequency Outer Race  
+   - **BSF** = Ball Spin Frequency  
+4. Match with the **signatures above** for diagnosis.
+
+---
+
+## 📌 Notes
+- Outer race faults show **fixed-frequency patterns** (stationary component).
+- Inner race and ball faults show **modulated patterns** (rotating with shaft).
+- Combined faults → require **advanced signal decomposition** (FFT, Wavelets, EMD).
+
+---
