@@ -198,3 +198,108 @@ It also describes the **physical damage mechanisms** and their **operational imp
 - Combined faults → require **advanced signal decomposition** (FFT, Wavelets, EMD).
 
 ---
+
+
+# 🔧 NASA IMS Bearing Dataset – Characteristics
+
+The **NASA IMS Bearing Dataset** (from the University of Cincinnati Intelligent Maintenance Systems Center) is widely used for **bearing fault diagnostics** and **prognostics**.  
+It provides full life-cycle vibration data of bearings running under constant load until **failure**.
+
+---
+
+## 📂 1. Dataset Setup
+- **Source**: University of Cincinnati, IMS Center in collaboration with NASA Ames.  
+- **Purpose**: Study bearing degradation from **healthy condition → fault initiation → failure**.  
+- **Test Rig**:
+  - Rotating shaft driven by a 2 hp motor.
+  - Shaft supported by **four bearings** (Rexnord ZA-2115 double-row bearings).
+  - Bearings numbered **1 to 4** (left to right).
+  - Bearing **3** typically fails first.
+
+---
+
+## ⚙️ 2. Operating Conditions
+- **Load**: Constant radial load of **6000 lbs** applied to the shaft via a spring.  
+- **Rotational Speed**: ~2000 rpm (constant).  
+- **Lubrication**: Oil circulation system.
+
+---
+
+## 🎛️ 3. Sensors & Sampling
+- **Sensors**: Accelerometers mounted on the bearing housings.  
+- **Sampling Frequency**: **20 kHz** (20,480 Hz).  
+- **Measurement Duration**: 1-second recordings every **10 minutes**.  
+- **Channels**: **4 vibration channels** (one per bearing).  
+- **Data Format**: `.mat` files (MATLAB format).  
+
+---
+
+## 📊 4. Data Organization
+The dataset contains **3 experimental runs**:
+
+- **Run 1** → ~35 days, ended in **bearing 3 outer race fault**.  
+- **Run 2** → ~7 days, ended in **bearing 3 inner race fault**.  
+- **Run 3** → ~7 days, ended in **bearing 1 roller element fault**.  
+
+Each run captures the **entire life cycle**:
+- Start: Healthy condition  
+- Mid: Early fault initiation  
+- End: Catastrophic failure  
+
+---
+
+## 🧾 5. Labeling / Ground Truth
+- **No per-file fault labels** are provided.  
+- Only **start time** and **end of run (failure)** are known.  
+- Health state must be inferred using signal features (RMS, kurtosis, frequency domain).  
+
+---
+
+## 🔍 6. Fault Progression Characteristics
+- **Early Stage**: Low vibration, noise-like signals, weak fault frequencies.  
+- **Mid Stage**: Fault characteristic frequencies (BPFI, BPFO, BSF) appear with harmonics.  
+- **Late Stage**: Broadband high-frequency energy, RMS growth, stronger impulses.  
+- **Failure**: Strong bursts, wide spectrum energy, catastrophic breakdown.  
+
+---
+
+## 📌 7. Features Used in Research
+Common extracted features include:
+- **Time Domain**: RMS, standard deviation, skewness, kurtosis, peak-to-peak.  
+- **Frequency Domain**: FFT peaks at BPFI, BPFO, BSF.  
+- **Time-Frequency**: Wavelet transform, spectrograms.  
+- **Statistical Indicators**: Crest factor, entropy, energy ratios.  
+
+---
+
+## 🚀 8. Applications
+- **Fault Diagnosis** (inner race, outer race, ball faults).  
+- **Prognostics** (Remaining Useful Life prediction).  
+- **Deep Learning** (CNN, LSTM, Transformer models for time-series classification).  
+- **Feature Engineering Benchmark** for signal processing methods.  
+
+---
+
+## 📝 Summary Table
+
+| Characteristic      | Details |
+|---------------------|---------|
+| **Bearings**        | 4 Rexnord ZA-2115 |
+| **Load**            | 6000 lbs radial |
+| **Speed**           | ~2000 rpm |
+| **Sampling Rate**   | 20 kHz |
+| **Acquisition**     | 1 sec every 10 min |
+| **Sensors**         | Accelerometers |
+| **Runs**            | 3 (Outer race, Inner race, Ball fault) |
+| **Format**          | .mat files |
+| **Labels**          | Only start/stop (no per-file labels) |
+| **Use**             | Diagnostics & Prognostics |
+
+---
+
+## 📌 Notes
+- Outer race faults → **fixed-frequency patterns** (stationary component).  
+- Inner race & ball faults → **modulated patterns** (rotating components).  
+- Combined faults → require **advanced signal decomposition** (FFT, Wavelets, EMD).  
+
+---
