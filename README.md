@@ -1,4 +1,4 @@
-![Bearing Fault in the Outer Race of NASA IMS dataset](images/block_diagram.png)
+![Bearing Fault in the Outer Race of NASA IMS dataset](https://github.com/VARANASISATYASREEKANTH/Machinary_health_monitoring_Using_Wavelets/blob/main/2004.02.19.06.22.39_Overall_Channel_0.png)
 
 
 # Machinary_health_monitoring_Using_Wavelets(Bearings and Gear Box)
