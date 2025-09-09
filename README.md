@@ -374,9 +374,9 @@ $BSF = \frac{D}{2d} f_r \left(1 - \left(\frac{d}{D} \cos \theta \right)^2\right)
 
 ---
 
-## 🐍 5) Python Script
+## 🐍 5) Python Script for bearing frequencies
 
-```python
+
 import math
 
 def bearing_characteristic_freqs(rpm, n, d_mm, D_mm, theta_deg=0.0):
@@ -400,7 +400,9 @@ theta_deg = 0.0
 
 freqs = bearing_characteristic_freqs(rpm, n, d_mm, D_mm, theta_deg)
 for k,v in freqs.items():
-    print(f"{k}: {v:.2f} Hz")
+    print(f"{k}: {v:.2f} Hz"
+
+
 
 ## 📌 Notes
 - Outer race faults → **fixed-frequency patterns** (stationary component).  
@@ -408,3 +410,113 @@ for k,v in freqs.items():
 - Combined faults → require **advanced signal decomposition** (FFT, Wavelets, EMD).  
 
 ---
+# Gear Defect Detection Using Spectrograms
+
+This guide explains how to identify **gear defects** (cracks, chipped teeth, misalignment, wear, looseness) using **time–frequency analysis with spectrograms**.  
+
+---
+
+## 1. Why Spectrograms for Gears
+A spectrogram shows how spectral content evolves over time. Gear defects usually produce **time-varying impulses and modulations** of gear-mesh frequencies and harmonics — which spectrograms highlight clearly.
+
+---
+
+## 2. Fault Signatures to Look For
+- **Cracked / Chipped Tooth (Impact):**  
+  Short impulses → broadband bursts in spectrogram, repeating at once-per-revolution or mesh intervals.
+- **Pitting / Spalling / Wear:**  
+  Growing high-frequency energy and broadband noise.
+- **Misalignment / Eccentricity:**  
+  Amplitude modulation of gear-mesh frequency → sidebands around GMF.
+- **Looseness:**  
+  Irregular low-frequency energy and sidebands, often broadband.
+- **Broken Tooth:**  
+  Strong impulses at shaft rotation multiples, appearing/disappearing in spectrogram.
+
+---
+
+## 3. Gear Mesh Frequency (GMF)
+\[
+GMF = \text{Shaft Rotational Frequency (Hz)} \times \text{Number of Teeth}
+\]
+
+Example: Shaft speed = 1800 RPM = 30 Hz, Pinion = 20 teeth → **GMF = 30 × 20 = 600 Hz**.  
+Defect sidebands appear at `GMF ± n × shaft_rotation_freq`.
+
+---
+
+## 4. Analysis Pipeline
+1. **Acquire Data**  
+   - Accelerometer on gear housing/shaft  
+   - Sampling rate ≥ 5–10× highest GMF harmonic  
+2. **Preprocessing**  
+   - Remove DC offset, anti-aliasing, optional order tracking  
+3. **Compute Spectrogram (STFT)**  
+   - Hanning window, N=2048 (adjust to balance resolution), overlap 50–75%  
+   - Use dB scale for visualization  
+4. **Envelope Analysis**  
+   - Bandpass filter → Hilbert transform → envelope → FFT of envelope  
+5. **Feature Extraction**  
+   - GMF peaks, harmonics, sidebands, broadband energy, kurtosis, RMS  
+6. **Detection Rules**  
+   - Growth of GMF sidebands  
+   - Broadband noise increase  
+   - Peaks in envelope spectrum at shaft or mesh-related frequencies  
+
+---
+
+## 5. Detection Heuristics
+- **Periodic impulses + envelope FFT peaks at tooth-pass rate → Tooth damage.**  
+- **Broadband spectral rise → Wear or distributed damage.**  
+- **Symmetric GMF sidebands → Misalignment or looseness.**
+
+---
+
+## 6. Example Python Code
+```python
+import numpy as np
+import scipy.signal as sps
+from scipy.io import loadmat
+import matplotlib.pyplot as plt
+from scipy.signal import hilbert
+
+# --- Load vibration data from .mat file ---
+m = loadmat('vibration.mat')
+x = m['data'].flatten()
+Fs = float(m['Fs'].flatten()[0])
+
+# --- Spectrogram ---
+nperseg = 2048
+noverlap = int(nperseg * 0.75)
+f, t, Sxx = sps.stft(x, fs=Fs, window='hann', nperseg=nperseg, noverlap=noverlap, padded=True)
+S_db = 20*np.log10(np.abs(Sxx) + 1e-12)
+
+plt.figure(figsize=(10,4))
+plt.pcolormesh(t, f, S_db, shading='gouraud')
+plt.ylabel('Frequency (Hz)')
+plt.xlabel('Time (s)')
+plt.title('Spectrogram (dB)')
+plt.colorbar(label='dB')
+plt.ylim(0, Fs/2)
+plt.show()
+
+# --- Envelope analysis ---
+low, high = 2000, min(6000, Fs/2 - 100)
+b, a = sps.butter(4, [low/(Fs/2), high/(Fs/2)], btype='band')
+x_band = sps.filtfilt(b, a, x)
+analytic = hilbert(x_band)
+envelope = np.abs(analytic)
+
+# Envelope FFT
+N = len(envelope)
+env_f = np.fft.rfftfreq(N, 1/Fs)
+env_fft = np.abs(np.fft.rfft(envelope * np.hanning(N)))
+
+plt.figure(figsize=(8,4))
+plt.plot(env_f, env_fft)
+plt.xlim(0, 2000)
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Envelope FFT amplitude')
+plt.title(f'Envelope Spectrum ({low}-{high} Hz band)')
+plt.grid(True)
+plt.show()
